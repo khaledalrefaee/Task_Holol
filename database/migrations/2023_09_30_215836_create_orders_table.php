@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('name');
+            $table->string('address');
+            $table->string('order_number')->unique(); // رقم الطلب الفريد
+            $table->decimal('total_price', 10, 2);
+            $table->string('status');
             $table->timestamps();
         });
-
-        DB::table('categories')->insert([
-            ['name'=>'electric'],
-            ['name'=>'furniture'],
-        ]);
     }
 
     /**
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('orders');
     }
 };

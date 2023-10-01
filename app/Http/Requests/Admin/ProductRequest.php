@@ -24,10 +24,10 @@ class ProductRequest extends FormRequest
         return [
             'name' => 'required',
             'description' => 'required',
-            'selling_price' => 'required',
-            'qty' => 'required',
+            'selling_price' => 'required|max:10',
+            'qty' => 'required|max:10',
             'category_id' => 'required',
-            'photos'    => 'required'.$this->id,
-        ];
+            'photos' => 'required',
+            ];
     }
 }

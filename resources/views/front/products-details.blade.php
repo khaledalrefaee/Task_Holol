@@ -40,24 +40,34 @@
                                 <div class="col-lg-5 col-md-4 col-xs-12 box-image">
                                     <section class="page-content" id="content">
                                         <div class="images-container list_thumb">
+                                            @isset($product -> images)
+                                                @foreach($product -> images as $image)
                                             <div class="product-cover">
                                                 <img class="js-qv-product-cover img-fluid"
-                                                     src="{{$product -> images[0] -> photo ?? ''}}"
+                                                     src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}"
                                                      alt="" title="" style="width:100%;" itemprop="image">
                                                 <div class="layer hidden-sm-down" data-toggle="modal"
                                                      data-target="#product-modal">
                                                     <i class="fa fa-expand"></i>
                                                 </div>
                                             </div>
+                                                @endforeach
+                                            @endisset
 
                                             <div class="js-qv-mask mask only-product">
                                                 <div class="row">
+                                                    @if(session('success'))
+                                                        <div class="alert alert-success">
+                                                            {{ session('success') }}
+                                                        </div>
+                                                    @endif
+
                                                     @isset($product -> images)
                                                         @foreach($product -> images as $image)
                                                             <div class="item thumb-container col-md-6 col-xs-12 pt-30">
                                                                 <img class="img-fluid thumb js-thumb  selected "
-                                                                     data-image-medium-src="{{$image -> photo}}"
-                                                                     data-image-large-src="{{$image -> photo}}"
+                                                                     data-image-medium-src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}"
+                                                                     data-image-large-src="{{ asset('back/assets/imag/product/' . $product->images[1]->filename) ?? ''}}"
                                                                      src="{{$image -> photo}}"
                                                                      alt="" title="" itemprop="image">
                                                             </div>
@@ -72,11 +82,7 @@
                                 <div class="col-lg-7 col-md-8 col-xs-12 mt-sm-20">
                                     <div class="product-information">
                                         <div class="product-actions">
-{{--                                            <form action="{{route('products.reviews.store',$product -> id )}}"--}}
-{{--                                                  method="post" id="add-to-cart-or-refresh" class="row">--}}
-{{--                                                @csrf--}}
-                                                <input type="hidden" name="id_product" value="{{$product -> id }}"
-                                                       id="product_page_product_id">
+
 
                                                 <div class="productdetail-right col-12 col-lg-6 col-md-6">
                                                     <div class="product-reviews">
@@ -159,13 +165,13 @@
                                                     <div id="_desktop_productcart_detail">
                                                         <div class="product-add-to-cart in_border">
                                                             <div class="add">
-                                                                <button class="btn btn-primary add-to-cart"
-                                                                        data-button-action="add-to-cart" type="submit">
-                                                                    <div class="icon-cart">
-                                                                        <i class="shopping-cart"></i>
-                                                                    </div>
-                                                                    <span>Add to cart</span>
-                                                                </button>
+                                                                <form action="{{ route('cart.store', $product->id) }}" method="POST">
+                                                                    @csrf
+
+                                                                    <button type="submit"
+                                                                            class="btn btn-outline-primary">
+                                                                        Add to Cart
+                                                                    </button>
                                                             </div>
 
                                                             <a class="addToWishlist  wishlistProd_22" href="#"
@@ -198,14 +204,7 @@
 {{--                                                        </div>--}}
 {{--                                                    </div>--}}
 
-                                            <div class="product-quantity">
-                                                <span class="control-label">Quantity : </span>
-                                                <div class="qty">
-                                                    <button id="decreaseQty">-</button>
-                                                    <input type="number" name="qty" id="quantity_wanted" value="1" min="1">
-                                                    <button id="increaseQty">+</button>
-                                                </div>
-                                            </div>
+
                                             <span itemprop="price" class="price" id="product_price">
     Price : {{ $product->selling_price }}
 </span>
@@ -449,12 +448,12 @@
                                                     <img class="img-fluid image-cover"
                                                          src="{{ asset('back/assets/imag/product/' . $_product->images[0]->filename) ?? ''}}"
                                                          alt=""
-                                                         data-full-size-image-url="{{ asset('back/assets/imag/product/' . $_product->images[0]->filename) ?? ''}}"
+                                                         data-full-size-image-url=""
                                                          width="600" height="600">
                                                     <img class="img-fluid image-secondary"
-                                                         src="{{ asset('back/assets/imag/product/' . $_product->images[0]->filename) ?? ''}}}"
+                                                         src="{{ asset('back/assets/imag/product/' . $_product->images[1]->filename) ?? ''}}}"
                                                          alt=""
-                                                         data-full-size-image-url="{{ asset('back/assets/imag/product/' . $_product->images[0]->filename) ?? ''}}"
+                                                         data-full-size-image-url=""
                                                          width="600" height="600">
                                                 </a>
 
@@ -463,9 +462,7 @@
                                                 <div class="product-groups">
                                                     <div class="product-group-price">
                                                         <div class="product-price-and-shipping">
-                                                           <span itemprop="price" class="price" id="product_price">
-    Price : {{ $_product->selling_price }}
-</span>
+
 
 
                                                         </div>
@@ -512,62 +509,7 @@
 
 @section('scripts')
 
-    <script>
-        // تحديد عناصر الكمية والسعر
-        var quantityInput = document.getElementById('quantity_wanted');
-        var decreaseQtyButton = document.getElementById('decreaseQty');
-        var increaseQtyButton = document.getElementById('increaseQty');
-        var priceSpan = document.getElementById('product_price');
 
-        // قيمة السعر الأصلي
-        var originalPrice = parseFloat(priceSpan.textContent.split(":")[1]);
-
-        // إضافة مستمع لحدث النقر على زر الزيادة
-        increaseQtyButton.addEventListener('click', function() {
-            var quantity = parseInt(quantityInput.value);
-            if (!isNaN(quantity)) {
-                quantityInput.value = quantity + 1;
-                // حساب السعر المحدث بناءً على الكمية
-                var updatedPrice = originalPrice * (quantity + 1);
-                priceSpan.textContent = 'Price : ' + updatedPrice.toFixed(2); // تعيين السعر المحدث
-            }
-        });
-
-        // إضافة مستمع لحدث النقر على زر النقص
-        decreaseQtyButton.addEventListener('click', function() {
-            var quantity = parseInt(quantityInput.value);
-            if (!isNaN(quantity) && quantity > 1) {
-                quantityInput.value = quantity - 1;
-                // حساب السعر المحدث بناءً على الكمية
-                var updatedPrice = originalPrice * (quantity - 1);
-                priceSpan.textContent = 'Price : ' + updatedPrice.toFixed(2); // تعيين السعر المحدث
-            }
-        });
-    </script
-
-
-
-
-
-    <script>
-        // تحديد عنصر الزر والإدخال
-        var increaseQtyButton = document.getElementById('increaseQty');
-        var quantityInput = document.getElementById('quantity_wanted');
-
-        // إضافة مستمع لحدث النقر على الزر
-        increaseQtyButton.addEventListener('click', function() {
-            // الحصول على القيمة الحالية للكمية
-            var currentQty = parseInt(quantityInput.value);
-
-            // القيمة القصوى للكمية من البيانات (قم بتعديلها حسب احتياجك)
-            var maxQtyFromData = {{$product->qty}}; // على سبيل المثال
-
-            // زيادة الكمية إذا لم تتجاوز القيمة القصوى
-            if (currentQty < maxQtyFromData) {
-                quantityInput.value = currentQty + 1;
-            }
-        });
-    </script>
 
 
     //wishList

@@ -63,15 +63,7 @@
                                 </div>
                             </div>
 
-{{--                            <div class="col-md-3">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label for="academic_year">Image product : <span class="text-danger">*</span></label>--}}
-{{--                                    <input type="file" accept="image/*" class="form-control @error('photos') is-invalid @enderror"   name="photos[]" multiple>--}}
-{{--                                    @error('photos')--}}
-{{--                                    <div class="invalid-feedback" style="color: #8B0000;">{{ $message }}</div>--}}
-{{--                                    @enderror--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="col-form-label">Category</label>
@@ -86,12 +78,88 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="academic_year">Image product : <span class="text-danger">*</span></label>
+                            <input type="file" accept="image/*" class="form-control @error('photos') is-invalid @enderror" id="imageInput" name="photos[]" multiple>
+                            @error('photos')
+                            <div class="invalid-feedback" style="color: #8B0000;">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div id="imagePreview" class="row">
+                            image update
+                        </div>
                         <!-- /.card-body -->
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Go!</button>
                         </div>
                     </form>
+
+
+                    <div class="row">
+                        Image Old
+                        @if($Product)
+                            <div class="row">
+
+                                @foreach($Product->images as $image)
+                                    <div class="text-center">
+                                        <img id="avatar-preview" src="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                        class="rounded-circle" style="width: 150px;" alt="Avatar" />
+                                    </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p>المنتج غير موجود.</p>
+                        @endif
+                    </div>
                 </div>
                 <!-- /.card -->
             </div>
 @endsection
+
+
+<script>
+    document.getElementById('avter-input').addEventListener('change', function () {
+        const fileInput = this;
+        const previewImage = document.getElementById('imagePreview');
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    });
+</script>
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // عند تغيير الملفات المحددة في حقل الإدخال
+                $("#imageInput").change(function() {
+                    // إفراغ معاينة الصور الحالية
+                    $("#imagePreview").empty();
+
+                    // تحقق من وجود ملفات محددة
+                    if (this.files && this.files.length > 0) {
+                        // عرض كل صورة محددة
+                        for (let i = 0; i < this.files.length; i++) {
+                            const file = this.files[i];
+                            if (file.type.match('image.*')) {
+                                // إضافة عنصر img لمعاينة الصورة
+                                const img = document.createElement('img');
+                                img.className = 'col-md-3'; // تعديل الأصناف حسب احتياجك
+                                img.src = URL.createObjectURL(file);
+
+                                // إضافة الصورة إلى معاينة الصور
+                                $("#imagePreview").append(img);
+                            }
+                        }
+                    }
+                });
+            });
+        </script>

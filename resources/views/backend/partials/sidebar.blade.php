@@ -13,6 +13,9 @@
         <li>
             <a href="{{route('admin.product')}}"><i class="la la-user-secret"></i> <span>Product</span></a>
         </li>
+        <li>
+            <a href="{{route('admin.order')}}"><i class="la la-user-secret"></i> <span>Order</span></a>
+        </li>
     </ul>
     </div>
     </div>

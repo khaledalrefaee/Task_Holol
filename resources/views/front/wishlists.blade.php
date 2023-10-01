@@ -84,29 +84,34 @@
                         <div id="categories-product">
                             <div id="js-product-list">
                                 <div class="products product_list grid row" data-default-view="grid">
-                                    @isset($products)
-                                        @foreach($products as $product)
-                                            <div class="item  col-lg-4 col-md-6 col-xs-12 text-center no-padding">
-                                                <div class="product-miniature js-product-miniature item-one"
-                                                     data-id-product="22" data-id-product-attribute="408" itemscope=""
-                                                     itemtype="http://schema.org/Product">
-                                                    <div class="thumbnail-container">
-                                                        <a href="audio/22-408-aenean-porta-ligula-egestas-east.html#/1-size-s/10-color-red"
-                                                           class="thumbnail product-thumbnail two-image">
-                                                            <img class="img-fluid image-cover"
-                                                                 src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}"
-                                                                 alt=""
-                                                                 data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}}"
-                                                                 width="600" height="600">
-                                                            <img class="img-fluid image-secondary"
-                                                                 src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}"
-                                                                 alt=""
-                                                                 data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}"
-                                                                 width="600" height="600">
-                                                        </a>
 
+                                    @if(isset($product->images) && $product->images->count() > 0)
+                                    @foreach($product->images as $image)
+                                        <div class="item col-lg-4 col-md-6 col-xs-12 text-center no-padding">
+                                            <div class="product-miniature js-product-miniature item-one"
+                                                 data-id-product="{{ $product->id }}" data-id-product-attribute="{{ $product->id }}" itemscope=""
+                                                 itemtype="http://schema.org/Product">
+                                                <div class="thumbnail-container">
+                                                    <a href="audio/{{ $product->id }}-{{ $product->id }}-aenean-porta-ligula-egestas-east.html#/1-size-s/10-color-red"
+                                                       class="thumbnail product-thumbnail two-image">
+                                                        <img class="img-fluid image-cover"
+                                                             src="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             alt=""
+                                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             width="600" height="600">
+                                                        <img class="img-fluid image-secondary"
+                                                             src="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             alt=""
+                                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             width="600" height="600">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                
 
-                                                        <div class="product-flags new">New</div>
+                                                        <div class="product-flags new">{{$product->name}}</div>
                                                     </div>
                                                     <div class="product-description">
                                                         <div class="product-groups">
@@ -185,7 +190,8 @@
 
                                             @include('front.includes.product-details',$product)
                                         @endforeach
-                                    @endisset
+                                        @endif
+                                    
                                 </div>
                             </div>
 

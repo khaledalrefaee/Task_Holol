@@ -8,10 +8,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{route('admin.store.product')}}" enctype="multipart/form-data">
+                <form method="post" id="dpzMultipleFiles" class="dropzone"  action="{{route('admin.store.product')}}" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-sm-6">
+
                             <div class="form-group">
                                 <label class="col-form-label">Name Product <span class="text-danger">*</span></label>
                                 <input class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" name="name" type="text">
@@ -51,11 +52,15 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="academic_year">Image product : <span class="text-danger">*</span></label>
-                                <input type="file" accept="image/*" class="form-control @error('photos') is-invalid @enderror"   name="photos[]" multiple>
+                                <input type="file" accept="image/*" class="form-control @error('photos') is-invalid @enderror" id="imageInput" name="photos[]" multiple>
                                 @error('photos')
                                 <div class="invalid-feedback" style="color: #8B0000;">{{ $message }}</div>
                                 @enderror
                             </div>
+
+
+
+
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -71,49 +76,52 @@
                             </div>
                         </div>
 
-                    </div>
 
+
+                            <!--end::Dropzone-->
+                        </div>
 
                     <div class="submit-section">
-                        <button class="btn btn-primary submit-btn">Submit</button>
+                        <button class="btn btn-primary submit-btn"  >Submit</button>
                     </div>
                 </form>
+
+                <div id="imagePreview" class="row">
+
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function initMap() {
-        // Create a new map centered on your current location
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                },
-                zoom: 17
-            });
+    $(document).ready(function() {
+        // عند تغيير الملفات المحددة في حقل الإدخال
+        $("#imageInput").change(function() {
+            // إفراغ معاينة الصور الحالية
+            $("#imagePreview").empty();
 
-            // Create a marker at your current location
-            var marker = new google.maps.Marker({
-                position: {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                },
-                map: map,
-                icon: {
-                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            // تحقق من وجود ملفات محددة
+            if (this.files && this.files.length > 0) {
+                // عرض كل صورة محددة
+                for (let i = 0; i < this.files.length; i++) {
+                    const file = this.files[i];
+                    if (file.type.match('image.*')) {
+                        // إضافة عنصر img لمعاينة الصورة
+                        const img = document.createElement('img');
+                        img.className = 'col-md-3'; // تعديل الأصناف حسب احتياجك
+                        img.src = URL.createObjectURL(file);
+
+                        // إضافة الصورة إلى معاينة الصور
+                        $("#imagePreview").append(img);
+                    }
                 }
-            });
-
-            // Allow the user to drag the marker
-            marker.setDraggable(true);
-
-            // Update the marker's position when the user drags it
-            google.maps.event.addListener(marker, 'dragend', function(event) {
-                document.getElementById("latitude").value = this.getPosition().lat();
-                document.getElementById("longitude").value = this.getPosition().lng();
-            });
+            }
         });
-    }
+    });
 </script>
+
+
+
+

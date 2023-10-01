@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CategoriesController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\OrderController;
 use Illuminate\Support\Facades\Route;
 
 define('PC',11);
@@ -60,6 +61,16 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'admin'], function () {
         Route::get('delete/{id}', [ProductController::class,'destroy'])->name('admin.product.delete');
 
         Route::post('Filter_Category', [ProductController::class,'Filter_Category'])->name('Filter_Category');
+
+    });
+    ################################## end Product routes ######################################
+
+
+    Route::group(['prefix' => 'order'], function () {
+        Route::get('/', [OrderController::class,'index'])->name('admin.order');
+        Route::get('/export-orders', [OrderController::class, 'exportOrders'])->name('export.orders');
+        Route::get('/Chnge/Cancelling/{id}', [OrderController::class, 'ChngeCancelling'])->name('Change.Status');
+
 
     });
 });

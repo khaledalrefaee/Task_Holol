@@ -34,7 +34,7 @@ class CategoriesRepository implements CategoriesRepositoryInterface {
     {
         try {
             $Category = Category::findOrFail($id);
-
+            $Category->name = $request->name;
             $Category->save();
             return redirect()->route('admin.categories');
         }
@@ -49,7 +49,10 @@ class CategoriesRepository implements CategoriesRepositoryInterface {
 
 
         try {
-            $Category = Category::findOrFail($id)->delete();;
+            $Category = Category::findOrFail($id)->delete();
+
+            $this->deleteOldImages($Category);
+
             return redirect()->back();
 
         } catch (\Exception $e) {

@@ -69,11 +69,11 @@
                                 <td>
                                     <h2 class="table-avatar">
                                         @if(isset($item->images[0]))
-                                            <a href="profile.html" class="avatar">
+                                            <a href="#" class="avatar">
                                                 <img alt="" src="{{ asset('back/assets/imag/product/' . $item->images[0]->filename) }}">
                                             </a>
                                         @endif
-                                        <a href="profile.html">{{$item->name}} <span></span></a>
+                                        <a href="#">{{$item->name}} <span></span></a>
                                     </h2>
                                 </td>
                                  <td>{{$item->cat->name}}</td>

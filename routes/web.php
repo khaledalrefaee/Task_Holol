@@ -49,6 +49,9 @@ Route::group(['namespace' => 'Site'], function () {
         Route::post('/add/{id}', [CartController::class,'addProducttoCart'])->name('cart.store');
         Route::patch('/update-shopping-cart', [CartController::class, 'updateCart'])->name('update.sopping.cart');
         Route::delete('/delete-cart-product', [CartController::class, 'deleteProduct'])->name('delete.cart.product');
+
+        Route::get('/cart/checkout', [CartController::class,'checkout'])->name('cart.checkout');
+        Route::post('/cart/confirm', [CartController::class,'confirm'])->name('cart.confirm');
     });
 
     Route::group(['namespace' => 'Site', 'middleware' => 'auth'], function () {

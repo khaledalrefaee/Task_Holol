@@ -10,6 +10,7 @@
 <title>Dashboard - HRMS admin template</title>
 
 <link rel="shortcut icon" type="image/x-icon" href="{{asset('back/assets/img/favicon.png')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css">
 
 <link rel="stylesheet" href="{{asset('back/assets/css/bootstrap.min.css')}}">
 
@@ -20,6 +21,14 @@
 <link rel="stylesheet" href="{{asset('back/assets/plugins/morris/morris.css')}}">
 
 <link rel="stylesheet" href="{{asset('back/assets/css/style.css')}}">
+    <style>
+        /* تعيين عرض وارتفاع أكبر للصور */
+        #imagePreview img {
+            width: 200px; /* تعيين العرض بالبكسلات أو النسبة المئوية حسب الحاجة */
+            height: 200px; /* تعيين الارتفاع بالبكسلات أو النسبة المئوية حسب الحاجة */
+            object-fit: cover; /* للحفاظ على نسبة العرض والارتفاع وعرض الصورة بشكل كامل */
+        }
+    </style>
 
 </head>
 <body>

@@ -71,38 +71,50 @@ class ProductRepository implements ProductRepositoryInterface {
     {
         return Product::findOrFail($id);
     }
-
-    public function UpdateProduct($request, $id)
+    public function updateProduct($request, $id)
     {
         try {
             DB::beginTransaction();
-
+    
             $product = Product::findOrFail($id);
-            // حذف الصور القديمة
-            $this->deleteOldImages($product);
-
-            // إدراج المنتج
-            $dataToUpdate = [
-                'name' => $request->name,
-                'category_id' => $request->category_id,
-                'selling_price' => $request->selling_price,
-                'qty' => $request->qty,
-                'description' => $request->description,
-            ];
-            update(new Product(), $dataToUpdate, array('id' => $id));
-
-
-            // إدراج الصور الجديدة
-            $this->addNewImages($product, $request);
-
+    
+            if ($request->hasFile('photos')) {
+                $folder = 'product';
+                $images = $request->file('photos');
+                $imageModels = [];
+    
+                foreach ($images as $image) {
+                    $fileName = uploadImage($folder, $image);
+    
+                    // استخدام updateOrCreate لإنشاء أو تحديث الصور
+                    $imageModel = Image::updateOrCreate(
+                        ['filename' => $fileName], // الشرط لتحديد الصورة
+                        ['filename' => $fileName]  // البيانات التي تحتاج إلى تحديثها (نفس الشرط هنا)
+                    );
+    
+                    $imageModels[] = $imageModel;
+                }
+    
+                // ربط الصور الجديدة بالمنتج
+                $product->images()->saveMany($imageModels);
+            }
+    
+            // تحديث بيانات المنتج
+            $product->update($request->only([
+                'name', 'category_id', 'selling_price', 'qty', 'description'
+            ]));
+    
             DB::commit();
-
-            return redirect()->route('admin.product')->with(['success' => 'تم تحديث البيانات بنجاح']);
+            return redirect()->route('admin.product');
         } catch (\Exception $ex) {
             DB::rollBack();
-            return redirect()->back()->with(['error' => 'عفوًا، حدث خطأ: ' . $ex->getMessage()])->withInput();
+            return redirect()->back()->with(['error' => $ex->getMessage()])->withInput();
         }
     }
+    
+    
+    
+    
 
 
 

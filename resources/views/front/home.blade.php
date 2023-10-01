@@ -48,9 +48,9 @@
     @if(session('success'))
         <div class="alert alert-success">
           {{ session('success') }}
-        </div> 
+        </div>
     @endif
-    
+
 @section('content')
 
     <div id="categories-product">
@@ -63,20 +63,19 @@
                                  data-id-product="22" data-id-product-attribute="408" itemscope=""
                                  itemtype="http://schema.org/Product">
                                 <div class="thumbnail-container">
-                                    <a href="{{route('product.details',$product -> id)}}"
 
-                                       class="thumbnail product-thumbnail two-image">
-                                        <img class="img-fluid image-cover"
-                                             src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? ''}}"
-                                             alt=""
-                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename)?? '' }}"
-                                             width="600" height="600">
-                                        <img class="img-fluid image-secondary"
-                                             src="{{ asset('back/assets/imag/product/' . $product->images[1]->filename)?? '' }}"
-                                             alt=""
-                                             data-full-size-image-url="{{$product -> images[0] -> photo ?? ''}}"
-                                             width="600" height="600">
-                                    </a>
+                                    @if(isset($product->images) && $product->images->count() > 0)
+                                        <a href="{{route('product.details',$product -> id)}}"class="thumbnail product-thumbnail two-image">
+                                            <img class="img-fluid image-cover"
+                                                 src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? '' }}"
+                                                 alt=""
+                                                 data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) }}"                                                 width="600" height="600">
+                                            <img class="img-fluid image-secondary"
+                                                 src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename) ?? '' }}"
+                                                 alt=""
+                                                 data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename ?? '') }}"                                                 width="600" height="600">
+                                        </a>
+                                    @endif
 
 
                                     <div class="product-flags new">New</div>
@@ -125,9 +124,7 @@
                                          itemtype="http://schema.org/Offer">
                                         <form action="{{ route('cart.store', $product->id) }}" method="POST">
                                             @csrf
-                                            <input wire:model="quantity.{{ $product->id }}" type="number"
-                                                   class="text-sm sm:text-base px-2 pr-2 rounded-lg border border-gray-400 py-1 focus:outline-none focus:border-blue-400"
-                                                   style="width: 50px"/>
+
                                             <button type="submit"
                                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                                 Add to Cart
@@ -206,7 +203,7 @@
 
             $.ajax({
                 type: 'post',
-                url: "{{Route('cart.store',$product->id)}}",
+                url: "{{Route('cart.store', isset($product->id) ? intval($product->id) : 0)}}",
                 data: {
                     'product_id': $(this).attr('data-product-id'),
                     'product_slug' : $(this).attr('data-product-id'),
@@ -219,3 +216,4 @@
     </script>
 
 @stop
+

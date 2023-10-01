@@ -72,14 +72,11 @@
                                                    class="select-list js-search-link">
                                                     Name, Z to A
                                                 </a>
-
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
 
@@ -101,11 +98,7 @@
                                                                  alt=""
                                                                  data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename)?? '' }}"
                                                                  width="600" height="600">
-                                                            <img class="img-fluid image-secondary"
-                                                                 src="{{ asset('back/assets/imag/product/' . $product->images[1]->filename)?? '' }}"
-                                                                 alt=""
-                                                                 data-full-size-image-url="{{$product -> images[0] -> photo ?? ''}}"
-                                                                 width="600" height="600">
+
                                                         </a>
 
 
@@ -153,16 +146,15 @@
                                                         <div class="product-buttons d-flex justify-content-center"
                                                              itemprop="offers" itemscope=""
                                                              itemtype="http://schema.org/Offer">
-                                                            <form
-                                                                action=""
-                                                                method="post" class="formAddToCart">
+
+                                                            <form action="{{ route('cart.store', $product->id) }}" method="POST">
                                                                 @csrf
-                                                                <input type="hidden" name="id_product"
-                                                                       value="{{$product -> id}}">
-                                                                <a class="add-to-cart cart-addition" data-product-id="{{$product -> id}}" data-product-slug="{{$product -> id}}" href="#"
-                                                                   data-button-action="add-to-cart"><i
-                                                                        class="novicon-cart"></i><span>Add to cart</span></a>
-                                                            </form>
+
+                                                                <button type="submit"
+                                                                        class="btn btn-outline-primary">
+                                                                    Add to Cart
+                                                                </button>
+
 
                                                             <a class="addToWishlist  wishlistProd_22" href="#"
                                                                data-product-id="{{$product -> id}}">
@@ -239,6 +231,8 @@
             }
         });
 
+
+
         $(document).on('click', '.addToWishlist', function (e) {
             e.preventDefault();
 
@@ -260,21 +254,8 @@
             });
         });
 
-        $(document).on('click', '.cart-addition', function (e) {
-            e.preventDefault();
 
-            $.ajax({
-                type: 'post',
-                url: "{{Route('cart.store)}}",
-                data: {
-                    'product_id': $(this).attr('data-product-id'),
-                    'product_slug' : $(this).attr('data-product-id'),
-                },
-                success: function (data) {
 
-                }
-            });
-        });
     </script>
 
 @stop
