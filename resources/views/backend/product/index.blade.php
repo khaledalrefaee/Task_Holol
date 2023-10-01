@@ -38,11 +38,12 @@
                     </select>
                 </form>
             </div>
+            <input type="text" id="myInput" onkeyup='tableSearch()' placeholder="search">
 
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table table-striped custom-table datatable">
+                        <table class="table table-striped custom-table datatable" id="myTable">
                             <thead>
                             <tr>
                                 <th>Name</th>

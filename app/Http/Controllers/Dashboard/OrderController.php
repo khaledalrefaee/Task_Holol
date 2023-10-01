@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     public function index(){
         $totalPrice = Order::sum('total_price');
-        $order =Order::all();
+        $order =Order::orderBy('id', 'DESC')->get();
         return view('backend.order.index',compact('order','totalPrice'));
     }
 
