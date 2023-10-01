@@ -20,13 +20,13 @@ class CartController extends Controller
     public function addProducttoCart($id)
     {
         $book = Product::findOrFail($id);
-        $image = $book->images->first(); // الوصول إلى الصورة الأولى
+        $image = $book->images->first(); 
         $cart = session()->get('cart', []);
         if(isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
             $cart[$id] = [
-                'id' => $book->id, // تأكد من توفر مفتاح 'id' في مصفوفة $details
+                'id' => $book->id, 
                 "name" => $book->name,
                 "quantity" => isset($book->qty) ? $book->qty : 1,
                 "selling_price" => $book->selling_price,

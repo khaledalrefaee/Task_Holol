@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
+use App\Http\Requests\Admin\ProductUpdateRequest;
 use App\Repository\ProductRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -40,7 +41,7 @@ class ProductController extends Controller
     }
 
 
-    public function update(ProductRequest $request ,$id){
+    public function update(ProductUpdateRequest $request ,$id){
         return $this->Product->UpdateProduct($request ,$id);
     }
 

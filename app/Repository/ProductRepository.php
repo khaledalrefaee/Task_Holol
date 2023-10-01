@@ -12,9 +12,7 @@ class ProductRepository implements ProductRepositoryInterface {
 
     use Delete_Old_Image;
     public function getAllProduct(){
-
         return get_cols_where_p(new Product(), array("*"), "id", "DESC", PC);
-
     }
 
     public function getcategory()
@@ -28,19 +26,7 @@ class ProductRepository implements ProductRepositoryInterface {
             DB::beginTransaction();
 
             // تحقق من وجود الصور
-            if ($request->hasFile('photos')) {
-                $folder = 'product';
-                $images = $request->file('photos');
-                $imageModels = [];
 
-                foreach ($images as $image) {
-                    $fileName = uploadImage($folder, $image);
-
-                    $imageModel = new Image();
-                    $imageModel->filename = $fileName;
-                    $imageModels[] = $imageModel;
-                }
-            }
 
             // إدراج المنتج
             $dataToInsert = [
@@ -52,6 +38,9 @@ class ProductRepository implements ProductRepositoryInterface {
             ];
 
             $product = insert(new Product(), $dataToInsert, true);
+            
+            $this->addNewImages($product ,$request);
+
 
             // إذا كانت هناك صور، ربطها بالمنتج
             if (!empty($imageModels)) {
@@ -71,39 +60,49 @@ class ProductRepository implements ProductRepositoryInterface {
     {
         return Product::findOrFail($id);
     }
+
+
+
+// ...
+
     public function updateProduct($request, $id)
     {
         try {
             DB::beginTransaction();
-    
+
             $product = Product::findOrFail($id);
-    
+
             if ($request->hasFile('photos')) {
                 $folder = 'product';
                 $images = $request->file('photos');
                 $imageModels = [];
-    
+
+                $this->deleteOldImages($product);
+
                 foreach ($images as $image) {
                     $fileName = uploadImage($folder, $image);
-    
-                    // استخدام updateOrCreate لإنشاء أو تحديث الصور
-                    $imageModel = Image::updateOrCreate(
-                        ['filename' => $fileName], // الشرط لتحديد الصورة
-                        ['filename' => $fileName]  // البيانات التي تحتاج إلى تحديثها (نفس الشرط هنا)
-                    );
-    
+
+                    $imageModel = Image::where('filename', $fileName)->where('imageable_id', $product->id)->first();
+
+                    if ($imageModel) {
+                        $imageModel->update(['filename' => $fileName]);
+                    } else {
+                        $imageModel = new Image(['filename' => $fileName]);
+                        $product->images()->save($imageModel);
+                    }
+
                     $imageModels[] = $imageModel;
                 }
-    
-                // ربط الصور الجديدة بالمنتج
-                $product->images()->saveMany($imageModels);
             }
-    
-            // تحديث بيانات المنتج
-            $product->update($request->only([
-                'name', 'category_id', 'selling_price', 'qty', 'description'
-            ]));
-    
+
+            $dataToUpdate['name'] = $request->name;
+            $dataToUpdate['category_id'] = $request->category_id;
+            $dataToUpdate['selling_price'] = $request->selling_price;
+            $dataToUpdate['qty'] = $request->qty;
+            $dataToUpdate['description'] = $request->description;
+            update(new Product(), $dataToUpdate, array('id' => $id));
+
+          
             DB::commit();
             return redirect()->route('admin.product');
         } catch (\Exception $ex) {
@@ -111,10 +110,10 @@ class ProductRepository implements ProductRepositoryInterface {
             return redirect()->back()->with(['error' => $ex->getMessage()])->withInput();
         }
     }
-    
-    
-    
-    
+
+
+
+
 
 
 
@@ -123,8 +122,6 @@ class ProductRepository implements ProductRepositoryInterface {
         $product = Product::findOrFail($id);
         try
         {
-            // حذف الصور القديمة
-
             DB::beginTransaction();
             destroy(new Product(),array('id' => $id));
 

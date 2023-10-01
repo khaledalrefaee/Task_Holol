@@ -20,7 +20,7 @@ trait Delete_Old_Image
         }
     }
 
-    private function addNewImages(Product $product, Request $request)
+    public function addNewImages(Product $product, Request $request)
     {
         if ($request->hasFile('photos')) {
             $folder = 'product';

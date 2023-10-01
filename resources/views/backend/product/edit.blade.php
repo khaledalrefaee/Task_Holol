@@ -24,7 +24,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form novalidate="novalidate" action="{{route('admin.product.update',$Product->id)}}" method="POST">
+                    <form novalidate="novalidate" action="{{route('admin.product.update',$Product->id)}}" method="POST"  enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
@@ -80,7 +80,7 @@
                         </div>
                         <div class="form-group">
                             <label for="academic_year">Image product : <span class="text-danger">*</span></label>
-                            <input type="file" accept="image/*" class="form-control @error('photos') is-invalid @enderror" id="imageInput" name="photos[]" multiple>
+                            <input type="file" accept="image/*" class="form-control @error('photos') is-invalid @enderror"  id="imageInput" name="photos[]" multiple>
                             @error('photos')
                             <div class="invalid-feedback" style="color: #8B0000;">{{ $message }}</div>
                             @enderror

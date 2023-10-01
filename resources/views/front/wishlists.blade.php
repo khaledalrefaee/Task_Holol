@@ -85,26 +85,30 @@
                             <div id="js-product-list">
                                 <div class="products product_list grid row" data-default-view="grid">
 
-                                    @if(isset($product->images) && $product->images->count() > 0)
-                                    @foreach($product->images as $image)
-                                        <div class="item col-lg-4 col-md-6 col-xs-12 text-center no-padding">
+                                    @isset($products)
+                                    
+                                    @foreach($products as $product)
+                                        <div class="item  col-lg-4 col-md-6 col-xs-12 text-center no-padding">
                                             <div class="product-miniature js-product-miniature item-one"
-                                                 data-id-product="{{ $product->id }}" data-id-product-attribute="{{ $product->id }}" itemscope=""
+                                                 data-id-product="22" data-id-product-attribute="408" itemscope=""
                                                  itemtype="http://schema.org/Product">
                                                 <div class="thumbnail-container">
-                                                    <a href="audio/{{ $product->id }}-{{ $product->id }}-aenean-porta-ligula-egestas-east.html#/1-size-s/10-color-red"
+                                                    @if(isset($product->images[0]))
+                                                    <a href="#"
                                                        class="thumbnail product-thumbnail two-image">
                                                         <img class="img-fluid image-cover"
-                                                             src="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename ?? '') }}"
                                                              alt=""
-                                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename ?? '') }}"
                                                              width="600" height="600">
                                                         <img class="img-fluid image-secondary"
-                                                             src="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             src="{{ asset('back/assets/imag/product/' . $product->images[0]->filename ?? '') }}"
                                                              alt=""
-                                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $image->filename) }}"
+                                                             data-full-size-image-url="{{ asset('back/assets/imag/product/' . $product->images[0]->filename ?? '') }}"
                                                              width="600" height="600">
-                                                    </a>
+                                                
+                                    </a> @endif
+                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -163,16 +167,13 @@
                                                         <div class="product-buttons d-flex justify-content-center"
                                                              itemprop="offers" itemscope=""
                                                              itemtype="http://schema.org/Offer">
-                                                            <form
-                                                                action=""
-                                                                method="post" class="formAddToCart">
+                                                             <form action="{{ route('cart.store', $product->id) }}" method="POST">
                                                                 @csrf
-                                                                <input type="hidden" name="id_product"
-                                                                       value="{{$product -> id}}">
-                                                                <a class="add-to-cart" href="#"
-                                                                   data-button-action="add-to-cart"><i
-                                                                        class="novicon-cart"></i><span>Add to cart</span></a>
-                                                            </form>
+                    
+                                                                <button type="submit"
+                                                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                                    Add to Cart
+                                                            </button>
 
                                                             <a class="removeFromWishlist addToWishlist  wishlistProd_22" href="#"
                                                                data-product-id="{{$product -> id}}">
@@ -190,7 +191,7 @@
 
                                             @include('front.includes.product-details',$product)
                                         @endforeach
-                                        @endif
+                                      @endisset
                                     
                                 </div>
                             </div>

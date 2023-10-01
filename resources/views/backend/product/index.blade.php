@@ -69,11 +69,11 @@
                                 <td>
                                     <h2 class="table-avatar">
                                         @if(isset($item->images[0]))
-                                            <a href="#" class="avatar">
+                                            <a href="{{route('admin.product.edit',$item -> id)}}" class="avatar">
                                                 <img alt="" src="{{ asset('back/assets/imag/product/' . $item->images[0]->filename) }}">
                                             </a>
                                         @endif
-                                        <a href="#">{{$item->name}} <span></span></a>
+                                        <a href="{{route('admin.product.edit',$item -> id)}}">{{$item->name}} <span></span></a>
                                     </h2>
                                 </td>
                                  <td>{{$item->cat->name}}</td>
